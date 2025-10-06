@@ -16,7 +16,7 @@ public class PdiSimulator {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MainView FramePrincipal = new MainView();
-            FramePrincipal.setSize(1280, 720);
+            FramePrincipal.setSize(1280, 650);
             FramePrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             FramePrincipal.setVisible(true);
         });

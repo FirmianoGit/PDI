@@ -53,8 +53,7 @@ public class MainView extends javax.swing.JFrame {
         JFMainJpanel.revalidate();
         JFMainJpanel.repaint();
 
-        // Substituindo corretamente o painel de histograma pelo painel personalizado
-        JFHistograma histogramaPanel = new JFHistograma();
+        histogramaPanel = new JFHistograma();
         JFPainelHistograma.removeAll();
         JFPainelHistograma.setLayout(new java.awt.BorderLayout());
         JFPainelHistograma.add(histogramaPanel, java.awt.BorderLayout.CENTER);
@@ -73,6 +72,7 @@ public class MainView extends javax.swing.JFrame {
 
         JFMainJpanel = new javax.swing.JPanel();
         JFPainelHistograma = new javax.swing.JPanel();
+        JHistogramaLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         JFCarregarImagemMenuItem = new javax.swing.JMenuItem();
@@ -80,6 +80,7 @@ public class MainView extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("PDI - Sergiao\n");
         setPreferredSize(new java.awt.Dimension(1280, 720));
 
         JFMainJpanel.setPreferredSize(new java.awt.Dimension(512, 512));
@@ -95,16 +96,21 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 512, Short.MAX_VALUE)
         );
 
+        JFPainelHistograma.setPreferredSize(new java.awt.Dimension(750, 100));
+
         javax.swing.GroupLayout JFPainelHistogramaLayout = new javax.swing.GroupLayout(JFPainelHistograma);
         JFPainelHistograma.setLayout(JFPainelHistogramaLayout);
         JFPainelHistogramaLayout.setHorizontalGroup(
             JFPainelHistogramaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 512, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         JFPainelHistogramaLayout.setVerticalGroup(
             JFPainelHistogramaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        JHistogramaLabel1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        JHistogramaLabel1.setText("Histograma da Imagem");
 
         jMenu1.setText("Imagem");
 
@@ -140,15 +146,24 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(JFPainelHistograma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 244, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JFPainelHistograma, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JHistogramaLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 556, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(JFPainelHistograma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(JHistogramaLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JFPainelHistograma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JFMainJpanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,6 +183,7 @@ public class MainView extends javax.swing.JFrame {
 
                 // Redesenha o painel
                 painelImagem.repaint();
+                histogramaPanel.calcularHistograma(imagemAtual);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Erro ao abrir a imagem!");
@@ -229,11 +245,14 @@ public class MainView extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainView().setVisible(true));
     }
 
+    private JFHistograma histogramaPanel;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem JFCarregarImagemMenuItem;
     private javax.swing.JPanel JFMainJpanel;
     private javax.swing.JPanel JFPainelHistograma;
     private javax.swing.JMenuItem JFSalvarImagemMenuItem;
+    private javax.swing.JLabel JHistogramaLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
