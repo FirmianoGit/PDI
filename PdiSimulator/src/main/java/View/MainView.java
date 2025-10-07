@@ -4,8 +4,10 @@
  */
 package View;
 
+import java.awt.HeadlessException;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -23,7 +25,8 @@ public class MainView extends javax.swing.JFrame {
     /**
      * Creates new form MainView
      */
-    private BufferedImage imagemAtual; // guarda a imagem que será exibida
+    private BufferedImage imagemAtual;
+    private BufferedImage imagemOriginal;// guarda a imagem que será exibida
     private JPanel painelImagem;
 
     public MainView() {
@@ -38,7 +41,7 @@ public class MainView extends javax.swing.JFrame {
             }
         };
 
-        painelImagem.setLayout(new java.awt.BorderLayout());
+        painelImagem.setLayout(new java.awt.CardLayout());
 
         JScrollPane scroll = new JScrollPane(painelImagem);
 
@@ -73,11 +76,13 @@ public class MainView extends javax.swing.JFrame {
         JFMainJpanel = new javax.swing.JPanel();
         JFPainelHistograma = new javax.swing.JPanel();
         JHistogramaLabel1 = new javax.swing.JLabel();
+        JFDesfazerButton = new java.awt.Button();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        JFMenuImagem = new javax.swing.JMenu();
         JFCarregarImagemMenuItem = new javax.swing.JMenuItem();
         JFSalvarImagemMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        JMenuItemFiltroPassaBaixa = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDI - Sergiao\n");
@@ -112,7 +117,16 @@ public class MainView extends javax.swing.JFrame {
         JHistogramaLabel1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         JHistogramaLabel1.setText("Histograma da Imagem");
 
-        jMenu1.setText("Imagem");
+        JFDesfazerButton.setActionCommand("Desfazer");
+        JFDesfazerButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFDesfazerButton.setLabel("Desfazer");
+        JFDesfazerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFDesfazerButtonActionPerformed(evt);
+            }
+        });
+
+        JFMenuImagem.setText("Imagem");
 
         JFCarregarImagemMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFCarregarImagemMenuItem.setText("Carregar imagem");
@@ -121,7 +135,7 @@ public class MainView extends javax.swing.JFrame {
                 JFCarregarImagemMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(JFCarregarImagemMenuItem);
+        JFMenuImagem.add(JFCarregarImagemMenuItem);
 
         JFSalvarImagemMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFSalvarImagemMenuItem.setText("Salvar Imagem");
@@ -130,11 +144,21 @@ public class MainView extends javax.swing.JFrame {
                 JFSalvarImagemMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(JFSalvarImagemMenuItem);
+        JFMenuImagem.add(JFSalvarImagemMenuItem);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(JFMenuImagem);
 
-        jMenu2.setText("Tools");
+        jMenu2.setText("Filtros");
+
+        JMenuItemFiltroPassaBaixa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        JMenuItemFiltroPassaBaixa.setText("Passa Baixa");
+        JMenuItemFiltroPassaBaixa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JMenuItemFiltroPassaBaixaActionPerformed(evt);
+            }
+        });
+        jMenu2.add(JMenuItemFiltroPassaBaixa);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -147,22 +171,29 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JFPainelHistograma, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JFPainelHistograma, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(JHistogramaLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 556, Short.MAX_VALUE)))
+                        .addGap(0, 552, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(JFDesfazerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(JFDesfazerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(JHistogramaLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JFPainelHistograma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(JFMainJpanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(JFPainelHistograma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -180,14 +211,15 @@ public class MainView extends javax.swing.JFrame {
 
                 // Atualiza a imagem atual
                 this.imagemAtual = img;
-
+                this.imagemOriginal = img;
+                
+                setImagemAtual(img);
                 // Redesenha o painel
                 painelImagem.repaint();
                 histogramaPanel.calcularHistograma(imagemAtual);
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Erro ao abrir a imagem!");
-                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_JFCarregarImagemMenuItemActionPerformed
@@ -213,12 +245,57 @@ public class MainView extends javax.swing.JFrame {
             try {
                 ImageIO.write(imagemAtual, "bmp", arquivoSalvar); // Salva como BMP
                 JOptionPane.showMessageDialog(this, "Imagem salva com sucesso!");
-            } catch (Exception e) {
+            } catch (HeadlessException | IOException e) {
                 JOptionPane.showMessageDialog(this, "Erro ao salvar imagem!");
-                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_JFSalvarImagemMenuItemActionPerformed
+
+    private void JMenuItemFiltroPassaBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemFiltroPassaBaixaActionPerformed
+        JFPainelFiltroPassaBaixa painelPassaBaixa = new JFPainelFiltroPassaBaixa(this);
+        painelPassaBaixa.setVisible(true);
+
+//        this.imagemAntiga = this.imagemAtual;
+//        imagemAtual = FiltroMedia.aplicarFiltroMediaCinza(imagemAtual);
+//        JFMainJpanel.repaint();
+//        histogramaPanel.calcularHistograma(imagemAtual);
+//        JFPainelHistograma.repaint();
+    }//GEN-LAST:event_JMenuItemFiltroPassaBaixaActionPerformed
+
+    private void JFDesfazerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFDesfazerButtonActionPerformed
+        this.imagemAtual = this.imagemOriginal;
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFDesfazerButtonActionPerformed
+
+    public BufferedImage getImagemAtual() {
+        return imagemAtual;
+    }
+
+    public void setImagemAtual(BufferedImage imagem) {
+        imagemAtual = imagem;
+        painelImagem = new JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                if (imagemAtual != null) {
+                    g.drawImage(imagemAtual, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        JFMainJpanel.add(painelImagem, java.awt.BorderLayout.CENTER);
+        JFMainJpanel.repaint();
+        histogramaPanel.calcularHistograma(imagemAtual);
+        JFPainelHistograma.repaint();
+    }
+
+    public void repaintPainelImagem() {
+        painelImagem.repaint();
+    }
+
+    public void atualizarHistograma() {
+        histogramaPanel.calcularHistograma(imagemAtual);
+        JFPainelHistograma.repaint();
+    }
 
     /**
      * @param args the command line arguments
@@ -245,15 +322,16 @@ public class MainView extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainView().setVisible(true));
     }
 
-    private JFHistograma histogramaPanel;
-
+    private final JFHistograma histogramaPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem JFCarregarImagemMenuItem;
+    private java.awt.Button JFDesfazerButton;
     private javax.swing.JPanel JFMainJpanel;
+    private javax.swing.JMenu JFMenuImagem;
     private javax.swing.JPanel JFPainelHistograma;
     private javax.swing.JMenuItem JFSalvarImagemMenuItem;
     private javax.swing.JLabel JHistogramaLabel1;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem JMenuItemFiltroPassaBaixa;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
