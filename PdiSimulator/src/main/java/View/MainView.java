@@ -41,7 +41,6 @@ public class MainView extends javax.swing.JFrame {
                 }
             }
         };
-
         painelImagem.setLayout(new java.awt.CardLayout());
 
         JScrollPane scroll = new JScrollPane(painelImagem);
@@ -63,6 +62,40 @@ public class MainView extends javax.swing.JFrame {
         JFPainelHistograma.add(histogramaPanel, java.awt.BorderLayout.CENTER);
         JFPainelHistograma.revalidate();
         JFPainelHistograma.repaint();
+        painelImagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // Garante que imagemAtual existe
+                if (imagemAtual == null) {
+                    JOptionPane.showMessageDialog(painelImagem, "Nenhuma imagem carregada.");
+                    return;
+                }
+
+                int imageWidth = imagemAtual.getWidth();
+                int imageHeight = imagemAtual.getHeight();
+                int panelWidth = painelImagem.getWidth();
+                int panelHeight = painelImagem.getHeight();
+
+                // Evita divisão por zero
+                if (panelWidth == 0 || panelHeight == 0) {
+                    JOptionPane.showMessageDialog(painelImagem, "Painel de imagem ainda não carregado.");
+                    return;
+                }
+
+                int x = e.getX();
+                int y = e.getY();
+
+                int px = x * imageWidth / panelWidth;
+                int py = y * imageHeight / panelHeight;
+
+                if (px >= 0 && px < imageWidth && py >= 0 && py < imageHeight) {
+                    int rgb = imagemAtual.getRGB(px, py);
+                    int cinza = rgb & 0xFF;
+                    JOptionPane.showMessageDialog(painelImagem,
+                            "Coord.: ( X: " + px + ", Y: " + py + " )\nValor: " + cinza);
+                }
+            }
+        });
     }
 
     /**
@@ -258,7 +291,7 @@ public class MainView extends javax.swing.JFrame {
                 // Atualiza a imagem atual
                 this.imagemAtual = img;
                 this.imagemOriginal = img;
-                
+
                 setImagemAtual(img);
                 // Redesenha o painel
                 painelImagem.repaint();
@@ -318,7 +351,7 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_JFMenuItemHighBoostActionPerformed
 
     private void JFMenuItemPrewittActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemPrewittActionPerformed
-       imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemOriginal);
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemOriginal);
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFMenuItemPrewittActionPerformed
 
