@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import Controller.PassaAlta.FiltrosPassaAlta;
 
 /**
  *
@@ -83,6 +84,10 @@ public class MainView extends javax.swing.JFrame {
         JFSalvarImagemMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         JMenuItemFiltroPassaBaixa = new javax.swing.JMenuItem();
+        JFMenuItemLaplaciano = new javax.swing.JMenuItem();
+        JFMenuItemHighBoost = new javax.swing.JMenuItem();
+        JFMenuItemPrewitt = new javax.swing.JMenuItem();
+        JFMenuItemSobbel = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDI - Sergiao\n");
@@ -125,6 +130,11 @@ public class MainView extends javax.swing.JFrame {
                 JFDesfazerButtonActionPerformed(evt);
             }
         });
+        JFDesfazerButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFDesfazerButtonKeyPressed(evt);
+            }
+        });
 
         JFMenuImagem.setText("Imagem");
 
@@ -158,6 +168,42 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         jMenu2.add(JMenuItemFiltroPassaBaixa);
+
+        JFMenuItemLaplaciano.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        JFMenuItemLaplaciano.setText("Laplaciano");
+        JFMenuItemLaplaciano.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemLaplacianoActionPerformed(evt);
+            }
+        });
+        jMenu2.add(JFMenuItemLaplaciano);
+
+        JFMenuItemHighBoost.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        JFMenuItemHighBoost.setText("High Boost");
+        JFMenuItemHighBoost.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemHighBoostActionPerformed(evt);
+            }
+        });
+        jMenu2.add(JFMenuItemHighBoost);
+
+        JFMenuItemPrewitt.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        JFMenuItemPrewitt.setText("Operador de Prewitt");
+        JFMenuItemPrewitt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemPrewittActionPerformed(evt);
+            }
+        });
+        jMenu2.add(JFMenuItemPrewitt);
+
+        JFMenuItemSobbel.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        JFMenuItemSobbel.setText("Operador de Sobel");
+        JFMenuItemSobbel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemSobbelActionPerformed(evt);
+            }
+        });
+        jMenu2.add(JFMenuItemSobbel);
 
         jMenuBar1.add(jMenu2);
 
@@ -254,18 +300,36 @@ public class MainView extends javax.swing.JFrame {
     private void JMenuItemFiltroPassaBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemFiltroPassaBaixaActionPerformed
         JFPainelFiltroPassaBaixa painelPassaBaixa = new JFPainelFiltroPassaBaixa(this);
         painelPassaBaixa.setVisible(true);
-
-//        this.imagemAntiga = this.imagemAtual;
-//        imagemAtual = FiltroMedia.aplicarFiltroMediaCinza(imagemAtual);
-//        JFMainJpanel.repaint();
-//        histogramaPanel.calcularHistograma(imagemAtual);
-//        JFPainelHistograma.repaint();
     }//GEN-LAST:event_JMenuItemFiltroPassaBaixaActionPerformed
 
     private void JFDesfazerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFDesfazerButtonActionPerformed
         this.imagemAtual = this.imagemOriginal;
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFDesfazerButtonActionPerformed
+
+    private void JFMenuItemLaplacianoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemLaplacianoActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroLaplacianoCinza(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemLaplacianoActionPerformed
+
+    private void JFMenuItemHighBoostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemHighBoostActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroHighBoost(imagemAtual, 1);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemHighBoostActionPerformed
+
+    private void JFMenuItemPrewittActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemPrewittActionPerformed
+       imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemPrewittActionPerformed
+
+    private void JFDesfazerButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFDesfazerButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFDesfazerButtonKeyPressed
+
+    private void JFMenuItemSobbelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemSobbelActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroSobel(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemSobbelActionPerformed
 
     public BufferedImage getImagemAtual() {
         return imagemAtual;
@@ -328,6 +392,10 @@ public class MainView extends javax.swing.JFrame {
     private java.awt.Button JFDesfazerButton;
     private javax.swing.JPanel JFMainJpanel;
     private javax.swing.JMenu JFMenuImagem;
+    private javax.swing.JMenuItem JFMenuItemHighBoost;
+    private javax.swing.JMenuItem JFMenuItemLaplaciano;
+    private javax.swing.JMenuItem JFMenuItemPrewitt;
+    private javax.swing.JMenuItem JFMenuItemSobbel;
     private javax.swing.JPanel JFPainelHistograma;
     private javax.swing.JMenuItem JFSalvarImagemMenuItem;
     private javax.swing.JLabel JHistogramaLabel1;

@@ -64,8 +64,8 @@ public class JFHistograma extends JPanel {
 
         // Desenhar legenda horizontal (0 e 255)
         g.setColor(Color.BLACK);
-        g.drawString("0", margemEsquerda, altura + 15);
-        g.drawString("255", getWidth() - 20, altura + 15);
+        g.drawString("255", margemEsquerda, altura + 15);
+        g.drawString("0", getWidth() - 20, altura + 15);
 
         // Desenhar linha base
         g.drawLine(margemEsquerda, altura, getWidth(), altura);
