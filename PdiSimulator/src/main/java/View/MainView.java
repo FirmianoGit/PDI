@@ -4,6 +4,9 @@
  */
 package View;
 
+import Controller.Espelhamentos.Espelhamentos;
+import Controller.PassaAlta.FiltrosPassaAlta;
+import Controller.Rotacoes.Rotacoes;
 import java.awt.HeadlessException;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,7 +16,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import Controller.PassaAlta.FiltrosPassaAlta;
 
 /**
  *
@@ -29,6 +31,8 @@ public class MainView extends javax.swing.JFrame {
     private BufferedImage imagemAtual;
     private BufferedImage imagemOriginal;// guarda a imagem que será exibida
     private JPanel painelImagem;
+    private javax.swing.JMenuItem JFMenuItemExpansao;
+    private javax.swing.JMenuItem JFMenuItemCompressao;
 
     public MainView() {
         initComponents();
@@ -121,10 +125,17 @@ public class MainView extends javax.swing.JFrame {
         JFMenuItemHighBoost = new javax.swing.JMenuItem();
         JFMenuItemPrewitt = new javax.swing.JMenuItem();
         JFMenuItemSobbel = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDI - Sergiao\n");
-        setPreferredSize(new java.awt.Dimension(1280, 720));
 
         JFMainJpanel.setPreferredSize(new java.awt.Dimension(512, 512));
 
@@ -238,6 +249,71 @@ public class MainView extends javax.swing.JFrame {
         });
         jMenu2.add(JFMenuItemSobbel);
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem1.setText("Espelhamento Horizontal");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemEspelhamentoHorizontal(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem2.setText("Espelhamento Vertical");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemEspelhamentoVertical(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
+        jMenu1.setText("Rotações");
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem3.setText("90° Horário");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItem90Horario(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem4.setText("90° Anti-Horário");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItem90AntiHorario(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
+
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem5.setText("180°");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItem180(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
+        jMenu2.add(jMenu1);
+
+        jMenuItem8.setText("Transformações");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemTransformacoes(evt);
+            }
+        });
+        jMenu2.add(jMenuItem8);
+
+        jMenuItem6.setText("Soma");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFMenuItemSoma(evt);
+            }
+        });
+        jMenu2.add(jMenuItem6);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -330,39 +406,74 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_JFSalvarImagemMenuItemActionPerformed
 
-    private void JMenuItemFiltroPassaBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemFiltroPassaBaixaActionPerformed
-        JFPainelFiltroPassaBaixa painelPassaBaixa = new JFPainelFiltroPassaBaixa(this);
-        painelPassaBaixa.setVisible(true);
-    }//GEN-LAST:event_JMenuItemFiltroPassaBaixaActionPerformed
-
     private void JFDesfazerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFDesfazerButtonActionPerformed
         this.imagemAtual = this.imagemOriginal;
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFDesfazerButtonActionPerformed
 
-    private void JFMenuItemLaplacianoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemLaplacianoActionPerformed
-        imagemAtual = FiltrosPassaAlta.aplicarFiltroLaplacianoCinza(imagemAtual);
-        setImagemAtual(imagemAtual);
-    }//GEN-LAST:event_JFMenuItemLaplacianoActionPerformed
+    private void JFDesfazerButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFDesfazerButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFDesfazerButtonKeyPressed
 
-    private void JFMenuItemHighBoostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemHighBoostActionPerformed
-        imagemAtual = FiltrosPassaAlta.aplicarFiltroHighBoost(imagemAtual, 1);
+    private void JFMenuItem180(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItem180
+        imagemAtual = Rotacoes.aplicarRotacao180(imagemOriginal);
         setImagemAtual(imagemAtual);
-    }//GEN-LAST:event_JFMenuItemHighBoostActionPerformed
+    }//GEN-LAST:event_JFMenuItem180
+
+    private void JFMenuItem90AntiHorario(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItem90AntiHorario
+        imagemAtual = Rotacoes.aplicarRotacao90AntiHorario(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItem90AntiHorario
+
+    private void JFMenuItem90Horario(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItem90Horario
+        imagemAtual = Rotacoes.aplicarRotacao90Horario(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItem90Horario
+
+    private void JFMenuItemEspelhamentoVertical(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemEspelhamentoVertical
+        imagemAtual = Espelhamentos.aplicarEspelhamentoVertical(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemEspelhamentoVertical
+
+    private void JFMenuItemEspelhamentoHorizontal(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemEspelhamentoHorizontal
+        imagemAtual = Espelhamentos.aplicarEspelhamentoHorizontal(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemEspelhamentoHorizontal
+
+    private void JFMenuItemSobbelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemSobbelActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroSobel(imagemOriginal);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemSobbelActionPerformed
 
     private void JFMenuItemPrewittActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemPrewittActionPerformed
         imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemOriginal);
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFMenuItemPrewittActionPerformed
 
-    private void JFDesfazerButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFDesfazerButtonKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JFDesfazerButtonKeyPressed
-
-    private void JFMenuItemSobbelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemSobbelActionPerformed
-        imagemAtual = FiltrosPassaAlta.aplicarFiltroSobel(imagemOriginal);
+    private void JFMenuItemHighBoostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemHighBoostActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroHighBoost(imagemAtual, 1);
         setImagemAtual(imagemAtual);
-    }//GEN-LAST:event_JFMenuItemSobbelActionPerformed
+    }//GEN-LAST:event_JFMenuItemHighBoostActionPerformed
+
+    private void JFMenuItemLaplacianoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemLaplacianoActionPerformed
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroLaplacianoCinza(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFMenuItemLaplacianoActionPerformed
+
+    private void JMenuItemFiltroPassaBaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemFiltroPassaBaixaActionPerformed
+        JFPainelFiltroPassaBaixa painelPassaBaixa = new JFPainelFiltroPassaBaixa(this);
+        painelPassaBaixa.setVisible(true);
+    }//GEN-LAST:event_JMenuItemFiltroPassaBaixaActionPerformed
+
+    private void JFMenuItemTransformacoes(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemTransformacoes
+        JFPainelTransformacoes painelTransformacoes = new JFPainelTransformacoes(this);
+        painelTransformacoes.setVisible(true);
+    }//GEN-LAST:event_JFMenuItemTransformacoes
+
+    private void JFMenuItemSoma(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemSoma
+        JFPainelSoma painelSoma = new JFPainelSoma(this);
+        painelSoma.setVisible(true);
+    }//GEN-LAST:event_JFMenuItemSoma
 
     public BufferedImage getImagemAtual() {
         return imagemAtual;
@@ -433,7 +544,15 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem JFSalvarImagemMenuItem;
     private javax.swing.JLabel JHistogramaLabel1;
     private javax.swing.JMenuItem JMenuItemFiltroPassaBaixa;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem8;
     // End of variables declaration//GEN-END:variables
 }
