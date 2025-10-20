@@ -1,6 +1,16 @@
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\br\dev\firmiano\pdisimulator\PdiSimulator.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\ampliacoes\Ampliacoes.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\Espelhamentos\Espelhamentos.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\FuncoesDeTransformacao\FuncoesDeTransformacao.java
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\PassaAlta\FiltrosPassaAlta.java
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\PassaBaixa\FiltroPassaBaixa.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\Rotacoes\Rotacoes.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\Soma\Soma.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\Controller\Transformacoes\FiltrosTransformacoes.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFAmpliacoesView.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFGammaForm.java
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFHistograma.java
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFPainelFiltroPassaBaixa.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFPainelSoma.java
+C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\JFPainelTransformacoes.java
 C:\Users\Firmiano\Desktop\Sergio - PDI\PdiSimulator\src\main\java\View\MainView.java

@@ -16,6 +16,7 @@ public class JFPainelFiltroPassaBaixa extends JFrame {
     public JFPainelFiltroPassaBaixa(MainView mainView) {
         this.mainView = mainView;
         setTitle("Filtro Passa-Baixa");
+        setLocationRelativeTo(mainView);
         setSize(300, 150);
         setLayout(new java.awt.FlowLayout());
 

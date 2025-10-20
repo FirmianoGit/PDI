@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-
 public class JFHistograma extends JPanel {
 
     private int[] histograma; // array com 256 posições para frequências
@@ -38,10 +37,10 @@ public class JFHistograma extends JPanel {
             return;
         }
 
-        int largura = getWidth() - margemEsquerda; // largura útil
-        int altura = getHeight() - margemInferior; // altura útil
+        int largura = getWidth() - margemEsquerda;  // largura útil para barras
+        int altura = getHeight() - margemInferior;  // altura útil para barras
 
-        // Encontrar o valor máximo
+        // Valor máximo para escalar
         int max = 0;
         for (int valor : histograma) {
             if (valor > max) {
@@ -49,25 +48,29 @@ public class JFHistograma extends JPanel {
             }
         }
 
-        double escala = (double) altura / max;
-
-        // Desenhar barras sólidas pretas
-        double larguraBarra = (double) largura / histograma.length;
-        g.setColor(Color.BLACK);
-
-        // INVERTE: 255 à esquerda, 0 à direita
-        for (int i = 0; i < histograma.length; i++) {
-            int alturaBarra = (int) (histograma[i] * escala);
-            int posInvertida = histograma.length - 1 - i;
-            g.fillRect(margemEsquerda + (int) (posInvertida * larguraBarra), altura - alturaBarra, (int) Math.ceil(larguraBarra), alturaBarra);
+        if (max == 0) {
+            return;
         }
 
-        // Desenhar legenda horizontal (0 e 255)
-        g.setColor(Color.BLACK);
-        g.drawString("255", margemEsquerda, altura + 15);
-        g.drawString("0", getWidth() - 20, altura + 15);
+        double escala = (double) altura / max;
 
-        // Desenhar linha base
-        g.drawLine(margemEsquerda, altura, getWidth(), altura);
+        g.setColor(Color.BLACK);
+
+        // Calcula espaçamento horizontal
+        double espacamento = (double) largura / 256;
+
+        // Desenha exatamente 256 barras
+        for (int i = 0; i < 256; i++) {
+            int alturaBarra = (int) (histograma[i] * escala);
+            int posX = margemEsquerda + (int) (i * espacamento);
+            g.drawLine(posX, altura, posX, altura - alturaBarra);
+        }
+
+        // Legendas
+        g.setColor(Color.BLACK);
+        g.drawString("0", margemEsquerda, altura + 15);
+        g.drawString("255", margemEsquerda + largura - 20, altura + 15);
+        g.drawLine(margemEsquerda, altura, margemEsquerda + largura, altura);
     }
+
 }

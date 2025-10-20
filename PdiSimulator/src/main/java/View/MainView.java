@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.Espelhamentos.Espelhamentos;
 import java.awt.HeadlessException;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +15,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import Controller.PassaAlta.FiltrosPassaAlta;
+import Controller.FuncoesDeTransformacao.FuncoesDeTransformacao;
+import Controller.Rotacoes.Rotacoes;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import javax.swing.ToolTipManager;
+import Controller.Transformacoes.FiltrosTransformacoes;
 
 /**
  *
@@ -32,27 +42,38 @@ public class MainView extends javax.swing.JFrame {
 
     public MainView() {
         initComponents();
+
         painelImagem = new JPanel() {
             @Override
-            protected void paintComponent(java.awt.Graphics g) {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 if (imagemAtual != null) {
                     g.drawImage(imagemAtual, 0, 0, getWidth(), getHeight(), this);
                 }
             }
+
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                if (imagemAtual == null) {
+                    return null;
+                }
+                Point p = panelToImageCoords(e.getPoint());
+                if (p == null) {
+                    return null;
+                }
+                int gray = getGraySample(p.x, p.y);
+                return "(" + p.x + "," + p.y + ") = " + gray;
+            }
         };
-        painelImagem.setLayout(new java.awt.CardLayout());
 
+        painelImagem.setLayout(new CardLayout());
+        ToolTipManager.sharedInstance().registerComponent(painelImagem);
+        ToolTipManager.sharedInstance().setInitialDelay(0);
+
+// adiciona painel no JScrollPane e depois no JFMainJpanel, apenas uma vez
         JScrollPane scroll = new JScrollPane(painelImagem);
-
-        // Remove qualquer componente dentro do JFMainJpanel
-        JFMainJpanel.removeAll();
-
-        // Adiciona o scroll com o painel no JFMainJpanel
-        JFMainJpanel.setLayout(new java.awt.BorderLayout());
-        JFMainJpanel.add(scroll, java.awt.BorderLayout.CENTER);
-
-        // Atualiza o layout para aplicar as mudanças
+        JFMainJpanel.setLayout(new BorderLayout());
+        JFMainJpanel.add(scroll, BorderLayout.CENTER);
         JFMainJpanel.revalidate();
         JFMainJpanel.repaint();
 
@@ -62,40 +83,10 @@ public class MainView extends javax.swing.JFrame {
         JFPainelHistograma.add(histogramaPanel, java.awt.BorderLayout.CENTER);
         JFPainelHistograma.revalidate();
         JFPainelHistograma.repaint();
-        painelImagem.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // Garante que imagemAtual existe
-                if (imagemAtual == null) {
-                    JOptionPane.showMessageDialog(painelImagem, "Nenhuma imagem carregada.");
-                    return;
-                }
 
-                int imageWidth = imagemAtual.getWidth();
-                int imageHeight = imagemAtual.getHeight();
-                int panelWidth = painelImagem.getWidth();
-                int panelHeight = painelImagem.getHeight();
-
-                // Evita divisão por zero
-                if (panelWidth == 0 || panelHeight == 0) {
-                    JOptionPane.showMessageDialog(painelImagem, "Painel de imagem ainda não carregado.");
-                    return;
-                }
-
-                int x = e.getX();
-                int y = e.getY();
-
-                int px = x * imageWidth / panelWidth;
-                int py = y * imageHeight / panelHeight;
-
-                if (px >= 0 && px < imageWidth && py >= 0 && py < imageHeight) {
-                    int rgb = imagemAtual.getRGB(px, py);
-                    int cinza = rgb & 0xFF;
-                    JOptionPane.showMessageDialog(painelImagem,
-                            "Coord.: ( X: " + px + ", Y: " + py + " )\nValor: " + cinza);
-                }
-            }
-        });
+        // Registra o painel para ativar tooltips dinâmicos com delay zero
+        ToolTipManager.sharedInstance().registerComponent(painelImagem);
+        ToolTipManager.sharedInstance().setInitialDelay(0);
     }
 
     /**
@@ -107,20 +98,38 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
         JFMainJpanel = new javax.swing.JPanel();
         JFPainelHistograma = new javax.swing.JPanel();
         JHistogramaLabel1 = new javax.swing.JLabel();
         JFDesfazerButton = new java.awt.Button();
+        JFAmpliarButton = new java.awt.Button();
+        JFRotacionarCentoEOitentaButton = new java.awt.Button();
+        JFEspVerticalButton = new java.awt.Button();
+        JFRotacionarMenosNoventaButton = new java.awt.Button();
+        JFRotacionarNoventaButton = new java.awt.Button();
+        JFEspHorizontalButton = new java.awt.Button();
         jMenuBar1 = new javax.swing.JMenuBar();
         JFMenuImagem = new javax.swing.JMenu();
         JFCarregarImagemMenuItem = new javax.swing.JMenuItem();
         JFSalvarImagemMenuItem = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuFiltros = new javax.swing.JMenu();
         JMenuItemFiltroPassaBaixa = new javax.swing.JMenuItem();
+        JMenuPassaAlta = new javax.swing.JMenu();
         JFMenuItemLaplaciano = new javax.swing.JMenuItem();
         JFMenuItemHighBoost = new javax.swing.JMenuItem();
         JFMenuItemPrewitt = new javax.swing.JMenuItem();
         JFMenuItemSobbel = new javax.swing.JMenuItem();
+        jMenuFuncoesDeTransformacao = new javax.swing.JMenu();
+        jMenuItemequalizacao = new javax.swing.JMenuItem();
+        jMenuItemNegativo = new javax.swing.JMenuItem();
+        jMenuItemLogaritmo = new javax.swing.JMenuItem();
+        jMenuItemLogaritmoExponencial = new javax.swing.JMenuItem();
+        jMenuItemFiltrosGama = new javax.swing.JMenuItem();
+        jMenuItemCompressaoExpansao = new javax.swing.JMenuItem();
+        jMenuItemSoma = new javax.swing.JMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDI - Sergiao\n");
@@ -132,7 +141,7 @@ public class MainView extends javax.swing.JFrame {
         JFMainJpanel.setLayout(JFMainJpanelLayout);
         JFMainJpanelLayout.setHorizontalGroup(
             JFMainJpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 512, Short.MAX_VALUE)
+            .addGap(0, 518, Short.MAX_VALUE)
         );
         JFMainJpanelLayout.setVerticalGroup(
             JFMainJpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,6 +178,90 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
+        JFAmpliarButton.setActionCommand("Ampliar");
+        JFAmpliarButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFAmpliarButton.setLabel("Ampliar");
+        JFAmpliarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFAmpliarButtonActionPerformed(evt);
+            }
+        });
+        JFAmpliarButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFAmpliarButtonKeyPressed(evt);
+            }
+        });
+
+        JFRotacionarCentoEOitentaButton.setActionCommand("Ampliar");
+        JFRotacionarCentoEOitentaButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFRotacionarCentoEOitentaButton.setLabel("Rotacionar 180");
+        JFRotacionarCentoEOitentaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFRotacionarCentoEOitentaButtonActionPerformed(evt);
+            }
+        });
+        JFRotacionarCentoEOitentaButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFRotacionarCentoEOitentaButtonKeyPressed(evt);
+            }
+        });
+
+        JFEspVerticalButton.setActionCommand("Ampliar");
+        JFEspVerticalButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFEspVerticalButton.setLabel("Esp. Vertical");
+        JFEspVerticalButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFEspVerticalButtonActionPerformed(evt);
+            }
+        });
+        JFEspVerticalButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFEspVerticalButtonKeyPressed(evt);
+            }
+        });
+
+        JFRotacionarMenosNoventaButton.setActionCommand("Ampliar");
+        JFRotacionarMenosNoventaButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFRotacionarMenosNoventaButton.setLabel("Rotacionar -90º");
+        JFRotacionarMenosNoventaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFRotacionarMenosNoventaButtonActionPerformed(evt);
+            }
+        });
+        JFRotacionarMenosNoventaButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFRotacionarMenosNoventaButtonKeyPressed(evt);
+            }
+        });
+
+        JFRotacionarNoventaButton.setActionCommand("Ampliar");
+        JFRotacionarNoventaButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFRotacionarNoventaButton.setLabel("Rotacionar 90º");
+        JFRotacionarNoventaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFRotacionarNoventaButtonActionPerformed(evt);
+            }
+        });
+        JFRotacionarNoventaButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFRotacionarNoventaButtonKeyPressed(evt);
+            }
+        });
+
+        JFEspHorizontalButton.setActionCommand("Ampliar");
+        JFEspHorizontalButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        JFEspHorizontalButton.setLabel("Esp. Horizontal");
+        JFEspHorizontalButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JFEspHorizontalButtonActionPerformed(evt);
+            }
+        });
+        JFEspHorizontalButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JFEspHorizontalButtonKeyPressed(evt);
+            }
+        });
+
         JFMenuImagem.setText("Imagem");
 
         JFCarregarImagemMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -191,7 +284,7 @@ public class MainView extends javax.swing.JFrame {
 
         jMenuBar1.add(JFMenuImagem);
 
-        jMenu2.setText("Filtros");
+        jMenuFiltros.setText("Filtros");
 
         JMenuItemFiltroPassaBaixa.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JMenuItemFiltroPassaBaixa.setText("Passa Baixa");
@@ -200,7 +293,9 @@ public class MainView extends javax.swing.JFrame {
                 JMenuItemFiltroPassaBaixaActionPerformed(evt);
             }
         });
-        jMenu2.add(JMenuItemFiltroPassaBaixa);
+        jMenuFiltros.add(JMenuItemFiltroPassaBaixa);
+
+        JMenuPassaAlta.setText("Passa Alta");
 
         JFMenuItemLaplaciano.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFMenuItemLaplaciano.setText("Laplaciano");
@@ -209,7 +304,7 @@ public class MainView extends javax.swing.JFrame {
                 JFMenuItemLaplacianoActionPerformed(evt);
             }
         });
-        jMenu2.add(JFMenuItemLaplaciano);
+        JMenuPassaAlta.add(JFMenuItemLaplaciano);
 
         JFMenuItemHighBoost.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFMenuItemHighBoost.setText("High Boost");
@@ -218,7 +313,7 @@ public class MainView extends javax.swing.JFrame {
                 JFMenuItemHighBoostActionPerformed(evt);
             }
         });
-        jMenu2.add(JFMenuItemHighBoost);
+        JMenuPassaAlta.add(JFMenuItemHighBoost);
 
         JFMenuItemPrewitt.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFMenuItemPrewitt.setText("Operador de Prewitt");
@@ -227,18 +322,79 @@ public class MainView extends javax.swing.JFrame {
                 JFMenuItemPrewittActionPerformed(evt);
             }
         });
-        jMenu2.add(JFMenuItemPrewitt);
+        JMenuPassaAlta.add(JFMenuItemPrewitt);
 
-        JFMenuItemSobbel.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         JFMenuItemSobbel.setText("Operador de Sobel");
         JFMenuItemSobbel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JFMenuItemSobbelActionPerformed(evt);
             }
         });
-        jMenu2.add(JFMenuItemSobbel);
+        JMenuPassaAlta.add(JFMenuItemSobbel);
 
-        jMenuBar1.add(jMenu2);
+        jMenuFiltros.add(JMenuPassaAlta);
+
+        jMenuFuncoesDeTransformacao.setText("Funções de Transformação");
+
+        jMenuItemequalizacao.setText("Equalizar");
+        jMenuItemequalizacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemequalizacaoActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemequalizacao);
+
+        jMenuItemNegativo.setText("Negativo");
+        jMenuItemNegativo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemNegativoActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemNegativo);
+
+        jMenuItemLogaritmo.setText("Logaritimo");
+        jMenuItemLogaritmo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogaritmoActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemLogaritmo);
+
+        jMenuItemLogaritmoExponencial.setText("Logaritmo Inverso");
+        jMenuItemLogaritmoExponencial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogaritmoExponencialActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemLogaritmoExponencial);
+
+        jMenuItemFiltrosGama.setText("Filtros Gama");
+        jMenuItemFiltrosGama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemFiltrosGamaActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemFiltrosGama);
+
+        jMenuItemCompressaoExpansao.setText("Compressao\\Expansao");
+        jMenuItemCompressaoExpansao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCompressaoExpansaoActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemCompressaoExpansao);
+
+        jMenuItemSoma.setText("Soma");
+        jMenuItemSoma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSomaActionPerformed(evt);
+            }
+        });
+        jMenuFuncoesDeTransformacao.add(jMenuItemSoma);
+
+        jMenuFiltros.add(jMenuFuncoesDeTransformacao);
+
+        jMenuBar1.add(jMenuFiltros);
 
         setJMenuBar(jMenuBar1);
 
@@ -247,16 +403,23 @@ public class MainView extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(JFMainJpanel, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JFPainelHistograma, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
+                    .addComponent(JFPainelHistograma, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(JHistogramaLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 552, Short.MAX_VALUE))
+                        .addGap(0, 673, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(JFDesfazerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(JFDesfazerButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFAmpliarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFRotacionarMenosNoventaButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFRotacionarNoventaButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFRotacionarCentoEOitentaButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFEspVerticalButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JFEspHorizontalButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -269,6 +432,18 @@ public class MainView extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(JFDesfazerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFAmpliarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFRotacionarNoventaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFRotacionarMenosNoventaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFRotacionarCentoEOitentaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFEspVerticalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JFEspHorizontalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(JHistogramaLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -278,6 +453,48 @@ public class MainView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private Point panelToImageCoords(Point panelPoint) {
+        if (imagemAtual == null) {
+            return null;
+        }
+        int imgW = imagemAtual.getWidth();
+        int imgH = imagemAtual.getHeight();
+        int panelW = painelImagem.getWidth();
+        int panelH = painelImagem.getHeight();
+
+        if (panelW == 0 || panelH == 0) {
+            return null;
+        }
+
+        // Calcula a coordenada relativa da imagem considerando o esticamento
+        double scaleX = (double) imgW / panelW;
+        double scaleY = (double) imgH / panelH;
+
+        int ix = (int) (panelPoint.x * scaleX);
+        int iy = (int) (panelPoint.y * scaleY);
+
+        if (ix < 0 || iy < 0 || ix >= imgW || iy >= imgH) {
+            return null;
+        }
+        return new Point(ix, iy);
+    }
+
+    private int getGraySample(int x, int y) {
+        try {
+            // se for TYPE_BYTE_GRAY ou similar, isso funciona direto
+            int sample = imagemAtual.getRaster().getSample(x, y, 0);
+            return sample;
+        } catch (Exception ex) {
+            // caso não seja possível (imagem RGB), convertemos para luminância
+            int rgb = imagemAtual.getRGB(x, y);
+            int r = (rgb >> 16) & 0xFF;
+            int g = (rgb >> 8) & 0xFF;
+            int b = rgb & 0xFF;
+            int luminance = (int) Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+            return luminance;
+        }
+    }
 
     private void JFCarregarImagemMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFCarregarImagemMenuItemActionPerformed
         JFileChooser chooser = new JFileChooser();
@@ -351,7 +568,7 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_JFMenuItemHighBoostActionPerformed
 
     private void JFMenuItemPrewittActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemPrewittActionPerformed
-        imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemOriginal);
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroPrewitt(imagemAtual);
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFMenuItemPrewittActionPerformed
 
@@ -360,29 +577,111 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_JFDesfazerButtonKeyPressed
 
     private void JFMenuItemSobbelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFMenuItemSobbelActionPerformed
-        imagemAtual = FiltrosPassaAlta.aplicarFiltroSobel(imagemOriginal);
+        imagemAtual = FiltrosPassaAlta.aplicarFiltroSobel(imagemAtual);
         setImagemAtual(imagemAtual);
     }//GEN-LAST:event_JFMenuItemSobbelActionPerformed
+
+    private void jMenuItemNegativoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNegativoActionPerformed
+        imagemAtual = FuncoesDeTransformacao.aplicarFiltroNegativoCinza(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_jMenuItemNegativoActionPerformed
+
+    private void jMenuItemLogaritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogaritmoActionPerformed
+        imagemAtual = FuncoesDeTransformacao.aplicarFiltroLogaritmoCinza(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_jMenuItemLogaritmoActionPerformed
+
+    private void jMenuItemLogaritmoExponencialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogaritmoExponencialActionPerformed
+        imagemAtual = FuncoesDeTransformacao.aplicarFiltroExponencialCinza(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_jMenuItemLogaritmoExponencialActionPerformed
+
+    private void jMenuItemFiltrosGamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFiltrosGamaActionPerformed
+        JFGammaForm telaGamma = new JFGammaForm(this);
+        telaGamma.setVisible(true);
+
+    }//GEN-LAST:event_jMenuItemFiltrosGamaActionPerformed
+
+    private void JFAmpliarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFAmpliarButtonActionPerformed
+        JFAmpliacoesView AmpliacoesView = new JFAmpliacoesView(this);
+        AmpliacoesView.setVisible(true);
+    }//GEN-LAST:event_JFAmpliarButtonActionPerformed
+
+    private void JFAmpliarButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFAmpliarButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFAmpliarButtonKeyPressed
+
+    private void JFRotacionarCentoEOitentaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFRotacionarCentoEOitentaButtonActionPerformed
+        imagemAtual = Rotacoes.aplicarRotacao180(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFRotacionarCentoEOitentaButtonActionPerformed
+
+    private void JFRotacionarCentoEOitentaButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFRotacionarCentoEOitentaButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFRotacionarCentoEOitentaButtonKeyPressed
+
+    private void JFEspVerticalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFEspVerticalButtonActionPerformed
+        imagemAtual = Espelhamentos.aplicarEspelhamentoVertical(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFEspVerticalButtonActionPerformed
+
+    private void JFEspVerticalButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFEspVerticalButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFEspVerticalButtonKeyPressed
+
+    private void JFRotacionarMenosNoventaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFRotacionarMenosNoventaButtonActionPerformed
+        imagemAtual = Rotacoes.aplicarRotacao90Horario(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFRotacionarMenosNoventaButtonActionPerformed
+
+    private void JFRotacionarMenosNoventaButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFRotacionarMenosNoventaButtonKeyPressed
+
+    }//GEN-LAST:event_JFRotacionarMenosNoventaButtonKeyPressed
+
+    private void JFRotacionarNoventaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFRotacionarNoventaButtonActionPerformed
+        imagemAtual = Rotacoes.aplicarRotacao90AntiHorario(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFRotacionarNoventaButtonActionPerformed
+
+    private void JFRotacionarNoventaButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFRotacionarNoventaButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFRotacionarNoventaButtonKeyPressed
+
+    private void JFEspHorizontalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JFEspHorizontalButtonActionPerformed
+        imagemAtual = Espelhamentos.aplicarEspelhamentoHorizontal(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_JFEspHorizontalButtonActionPerformed
+
+    private void JFEspHorizontalButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JFEspHorizontalButtonKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JFEspHorizontalButtonKeyPressed
+
+    private void jMenuItemCompressaoExpansaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCompressaoExpansaoActionPerformed
+        JFPainelTransformacoes painelTransformacoes = new JFPainelTransformacoes(this);
+        painelTransformacoes.setVisible(true);
+    }//GEN-LAST:event_jMenuItemCompressaoExpansaoActionPerformed
+
+    private void jMenuItemSomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSomaActionPerformed
+        JFPainelSoma painelSoma = new JFPainelSoma(this);
+        painelSoma.setVisible(true);
+    }//GEN-LAST:event_jMenuItemSomaActionPerformed
+
+    private void jMenuItemequalizacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemequalizacaoActionPerformed
+        imagemAtual = FuncoesDeTransformacao.aplicarEqualizacaoDaImagem(imagemAtual);
+        setImagemAtual(imagemAtual);
+    }//GEN-LAST:event_jMenuItemequalizacaoActionPerformed
 
     public BufferedImage getImagemAtual() {
         return imagemAtual;
     }
 
     public void setImagemAtual(BufferedImage imagem) {
-        imagemAtual = imagem;
-        painelImagem = new JPanel() {
-            @Override
-            protected void paintComponent(java.awt.Graphics g) {
-                super.paintComponent(g);
-                if (imagemAtual != null) {
-                    g.drawImage(imagemAtual, 0, 0, getWidth(), getHeight(), this);
-                }
-            }
-        };
-        JFMainJpanel.add(painelImagem, java.awt.BorderLayout.CENTER);
-        JFMainJpanel.repaint();
+
+        this.imagemAtual = imagem;
+        painelImagem.repaint(); // Apenas repinta, não recria o painel
         histogramaPanel.calcularHistograma(imagemAtual);
         JFPainelHistograma.repaint();
+
     }
 
     public void repaintPainelImagem() {
@@ -421,8 +720,11 @@ public class MainView extends javax.swing.JFrame {
 
     private final JFHistograma histogramaPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button JFAmpliarButton;
     private javax.swing.JMenuItem JFCarregarImagemMenuItem;
     private java.awt.Button JFDesfazerButton;
+    private java.awt.Button JFEspHorizontalButton;
+    private java.awt.Button JFEspVerticalButton;
     private javax.swing.JPanel JFMainJpanel;
     private javax.swing.JMenu JFMenuImagem;
     private javax.swing.JMenuItem JFMenuItemHighBoost;
@@ -430,10 +732,23 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem JFMenuItemPrewitt;
     private javax.swing.JMenuItem JFMenuItemSobbel;
     private javax.swing.JPanel JFPainelHistograma;
+    private java.awt.Button JFRotacionarCentoEOitentaButton;
+    private java.awt.Button JFRotacionarMenosNoventaButton;
+    private java.awt.Button JFRotacionarNoventaButton;
     private javax.swing.JMenuItem JFSalvarImagemMenuItem;
     private javax.swing.JLabel JHistogramaLabel1;
     private javax.swing.JMenuItem JMenuItemFiltroPassaBaixa;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu JMenuPassaAlta;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuFiltros;
+    private javax.swing.JMenu jMenuFuncoesDeTransformacao;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItemCompressaoExpansao;
+    private javax.swing.JMenuItem jMenuItemFiltrosGama;
+    private javax.swing.JMenuItem jMenuItemLogaritmo;
+    private javax.swing.JMenuItem jMenuItemLogaritmoExponencial;
+    private javax.swing.JMenuItem jMenuItemNegativo;
+    private javax.swing.JMenuItem jMenuItemSoma;
+    private javax.swing.JMenuItem jMenuItemequalizacao;
     // End of variables declaration//GEN-END:variables
 }
